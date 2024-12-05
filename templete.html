@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heart Disease Prediction</title>
+<link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+<style>
+body {
+  font-family: 'Arimo', sans-serif;
+  background-image: linear-gradient(to right top, #65dfc9, #6cdbeb, #77baf0, #848ef1, #945ff2);
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 600px;
+  margin: 50px auto;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  font-family: 'Pacifico', cursive;
+  color: #333;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+select {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  background-color: #ff6f61;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background-color: #ff4d3f;
+}
+
+.result {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 18px;
+  color: #333;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Heart Disease Prediction</h1>
+  <form action="{{ url_for('predict') }}" method="post">
+    <div class="form-group">
+      <label for="BMI">BMI:</label>
+      <input type="number" id="BMI" name="BMI" placeholder="Enter BMI" required>
+    </div>
+    <div class="form-group">
+      <label for="Smoking">Smoking:</label>
+      <select id="Smoking" name="Smoking" required>
+        <option value="1">Yes</option>
+        <option value="0">No</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="AlcoholDrinking">Alcohol Drinking:</label>
+      <select id="AlcoholDrinking" name="AlcoholDrinking" required>
+        <option value="1">Yes</option>
+        <option value="0">No</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="Stroke">Stroke:</label>
+      <select id="Stroke" name="Stroke" required>
+        <option value="1">Yes</option>
+        <option value="0">No</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="PhysicalHealth">Physical Health:</label>
+      <select id="PhysicalHealth" name="PhysicalHealth" required>
+        <option value="0">Excellent</option>
+        <option value="1">Good</option>
+        <option value="3">Very Good</option>
+        <option value="4">Fair</option>
+        <option value="5">Poor</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="MentalHealth">Mental Health:</label>
+      <select id="MentalHealth" name="MentalHealth" required>
+        <option value="0">Excellent</option>
+        <option value="1">Good</option>
+        <option value="3">Very Good</option>
+        <option value="4">Fair</option>
+        <option value="5">Poor</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="DiffWalking">Difficulty Walking:</label>
+      <select id="DiffWalking" name="DiffWalking" required>
+        <option value="1">Yes</option>
+        <option value="0">No</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="Sex">Sex:</label>
+      <select id="Sex" name="Sex" required>
+        <option value="1">Male</option>
+        <option value="0">Female</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="AgeCategory">Age Category:</label>
+      <select id="AgeCategory" name="AgeCategory" required>
+        <option value="0">18-24</option>
+        <option value="1">25-29</option>
+        <option value="2">30-34</option>
+        <option value="3">35-39</option>
+        <option value="4">40-44</option>
+        <option value="5">45-49</option>
+        <option value="6">50-54</option>
+        <option value="7">55-59</option>
+        <option value="8">60-64</option>
+        <option value="9">65-69</option>
+        <option value="10">70-74</option>
+        <option value="11">75-79</option>
+        <option value="12">80 or older</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="Race">Race:</label>
+      <select id="Race" name="Race" required>
+        <option value="0">White</option>
+        <option value="1">Hispanic</option>
+        <option value="3">Black</option>
+        <option value="4">Asian</option>
+        <option value="5">American Indian/Alaskan Native</option>
+        <option value="6">Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="Diabetic">Diabetic:</label>
+      <select id="Diabetic" name="Diabetic" required>
+        <option value="1">Yes</option>
+        <option value="0">No</option>
+        <option value="0">No, borderline diabetes</option>
+        <option value="1">Yes (during pregnancy)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="PhysicalActivity">Physical Activity:</label>
+      <select id="PhysicalActivity" name="PhysicalActivity" required>
+        <option value="1">Yes</option>
+        <option value="0">No</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="GenHealth">General Health:</label>
+      <select id="GenHealth" name="GenHealth" required>
+        <option value="0">Excellent</option>
+        <option value="1">Good</option>
+        <option value="3">Very Good</option>
+        <option value="4">Fair</option>
+        <option value="5">Poor</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="SleepTime">Sleep Time:</label>
+      <input type="number" id="SleepTime" name="SleepTime" placeholder="Enter Sleep Time (hours)" required>
+    </div>
+    <div class="form-group">
+      <label for="Asthma">Asthma:</label>
+      <select id="Asthma" name="Asthma" required>
+        <option value="1">Yes</option>
+        <option value="0">No</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="KidneyDisease">Kidney Disease:</label>
+      <select id="KidneyDisease" name="KidneyDisease" required>
+        <option value="1">Yes</option>
+        <option value="0">No</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="SkinCancer">Skin Cancer:</label>
+      <select id="SkinCancer" name="SkinCancer" required>
+        <option value="1">Yes</option>
+        <option value="0">No</option>
+      </select>
+    </div>
+    <button type="submit">Predict</button>
+  </form>
+  {% if prediction %}
+  <div class="result">
+    <p>Prediction: {{ prediction }}</p>
+  </div>
+  {% endif %}
+</div>
+</body>
+</html>
