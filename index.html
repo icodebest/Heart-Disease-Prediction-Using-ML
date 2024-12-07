@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Disease Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #0056b3;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, select, button {
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #004494;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+    </style>
+</head>
+<body>
+    <h1>Heart Disease Prediction</h1>
+    <form id="predictionForm">
+        <label for="age">Age:</label>
+        <input type="number" id="age" name="age" required>
+
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender" required>
+            <option value="1">Male</option>
+            <option value="0">Female</option>
+        </select>
+
+        <label for="chest_pain_type">Chest Pain Type:</label>
+        <select id="chest_pain_type" name="chest_pain_type" required>
+            <option value="1">Typical Angina</option>
+            <option value="2">Atypical Angina</option>
+            <option value="3">Non-anginal Pain</option>
+            <option value="4">Asymptomatic</option>
+        </select>
+
+        <label for="resting_bp">Resting Blood Pressure:</label>
+        <input type="number" id="resting_bp" name="resting_bp" required>
+
+        <label for="cholesterol">Serum Cholesterol:</label>
+        <input type="number" id="cholesterol" name="cholesterol" required>
+
+        <label for="fasting_bs">Fasting Blood Sugar:</label>
+        <select id="fasting_bs" name="fasting_bs" required>
+            <option value="1">Above 120 mg/dl</option>
+            <option value="0">Below 120 mg/dl</option>
+        </select>
+
+        <label for="ekg_results">Resting Electrocardiographic Results:</label>
+        <select id="ekg_results" name="ekg_results" required>
+            <option value="0">Normal</option>
+            <option value="1">ST-T Wave Abnormality</option>
+            <option value="2">Left Ventricular Hypertrophy</option>
+        </select>
+
+        <label for="max_hr">Maximum Heart Rate:</label>
+        <input type="number" id="max_hr" name="max_hr" required>
+
+        <label for="exercise_angina">Exercise-Induced Angina:</label>
+        <select id="exercise_angina" name="exercise_angina" required>
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+        </select>
+
+        <label for="st_depression">ST Depression Induced by Exercise:</label>
+        <input type="number" step="0.1" id="st_depression" name="st_depression" required>
+
+        <label for="st_slope">Slope of Peak Exercise ST Segment:</label>
+        <select id="st_slope" name="st_slope" required>
+            <option value="1">Upsloping</option>
+            <option value="2">Flat</option>
+            <option value="3">Downsloping</option>
+        </select>
+
+        <label for="num_vessels">Number of Major Vessels (Fluoroscopy):</label>
+        <input type="number" id="num_vessels" name="num_vessels" required>
+
+        <label for="thallium">Thallium Stress Test Results:</label>
+        <select id="thallium" name="thallium" required>
+            <option value="3">Normal</option>
+            <option value="6">Fixed Defect</option>
+            <option value="7">Reversible Defect</option>
+        </select>
+
+        <button type="submit">Predict</button>
+    </form>
+    <div class="result" id="result"></div>
+
+    <script>
+        document.getElementById("predictionForm").addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+
+            // Convert inputs to numeric types
+            for (let key in data) {
+                data[key] = parseFloat(data[key]);
+            }
+
+            try {
+                const response = await fetch("http://127.0.0.1:8000/predict", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data),
+                });
+
+                const result = await response.json();
+                document.getElementById("result").innerHTML = `
+                    Prediction: ${result.prediction === 1 ? "Heart Disease Detected" : "No Heart Disease"} <br>
+                    Probability: ${result.probability ? JSON.stringify(result.probability) : "N/A"}
+                `;
+            } catch (error) {
+                document.getElementById("result").innerHTML = "Error: Unable to make prediction.";
+            }
+        });
+    </script>
+</body>
+</html>
